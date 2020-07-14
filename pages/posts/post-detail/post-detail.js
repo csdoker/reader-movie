@@ -44,13 +44,49 @@ Page({
     const postsCollected = wx.getStorageSync('posts_collected')
     let postCollected = postsCollected[this.data.postId]
     postCollected = !postCollected
-    this.setData({
-      collected: postCollected
-    })
-    postsCollected[this.data.postId] = postCollected
-    wx.setStorageSync('posts_collected', postsCollected)
+    this.showModal(postsCollected, postCollected)
   },
 
+  showModal: function(postsCollected, postCollected) {
+    wx.showModal({
+      title: postCollected ? '收藏' : '取消收藏',
+      content: postCollected ? '是否收藏该文章？' : '是否取消收藏该文章？',
+      showCancel: true,
+      cancelText: '取消',
+      cancelColor: '#333',
+      confirmText: '确认',
+      confirmColor: '#405f80',
+      success: (res) => {
+        if (res.confirm) {
+          this.setData({
+            collected: postCollected
+          })
+          postsCollected[this.data.postId] = postCollected
+          wx.setStorageSync('posts_collected', postsCollected)
+          wx.showToast({
+            title: postCollected ? '收藏成功' : '取消成功',
+            duration: 1000,
+            icon: 'success'
+          })
+        }
+      }
+    })  
+  },
+
+  onShareTap: function() {
+    const itemList = ['分享给微信好友', '分享到朋友圈', '分享到QQ', '分享到微博']
+    wx.showActionSheet({
+      itemList,
+      itemColor: '#405f80',
+      success: (res) => {
+        wx.showModal({
+          title: `用户${itemList[res.tapIndex]}`,
+          content: '现在无法实现分享功能'
+        })
+      }
+    })
+  },
+ 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
