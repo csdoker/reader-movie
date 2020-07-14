@@ -41,6 +41,23 @@ Page({
   },
 
   onCollectionTap: function(event) {
+    // this.getPostsCollected()
+    this.getPostsCollectedSync()
+  },
+
+  getPostsCollected: function() {
+    wx.getStorage({
+      key: 'posts_collected',
+      success: (res) => {
+        const postsCollected = res.data
+        let postCollected = postsCollected[this.data.postId]
+        postCollected = !postCollected
+        this.showModal(postsCollected, postCollected)
+      }
+    })
+  },
+
+  getPostsCollectedSync: function() {
     const postsCollected = wx.getStorageSync('posts_collected')
     let postCollected = postsCollected[this.data.postId]
     postCollected = !postCollected
