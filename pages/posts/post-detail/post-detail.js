@@ -8,7 +8,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    
+    isPlayingMusic: false
   },
 
   /**
@@ -38,6 +38,16 @@ Page({
     // wx.getStorageSync('key')
     // wx.removeStorageSync('key')
     // wx.clearStorageSync()
+    wx.onBackgroundAudioPlay((res) => {
+      this.setData({
+        isPlayingMusic: true
+      })
+    })
+    wx.onBackgroundAudioPause((res) => {
+      this.setData({
+        isPlayingMusic: false
+      })
+    })
   },
 
   onCollectionTap: function(event) {
@@ -103,33 +113,30 @@ Page({
       }
     })
   },
- 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
 
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
+  onMusicTap: function() {
+    const isPlayingMusic = this.data.isPlayingMusic
+    const { url, title, coverImg } = this.data.post.music
+    if (isPlayingMusic) {
+      wx.pauseBackgroundAudio({
+        success: (res) => {
+          this.setData({
+            isPlayingMusic: false
+          })
+        },
+      })
+    } else {
+      wx.playBackgroundAudio({
+        dataUrl: url,
+        title: title,
+        coverImgUrl: coverImg,
+        success: () => {
+          this.setData({
+            isPlayingMusic: true
+          })
+        }
+      })
+    }
   },
 
   /**
