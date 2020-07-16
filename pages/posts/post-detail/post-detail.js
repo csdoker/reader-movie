@@ -1,6 +1,7 @@
 // pages/posts/post-detail/post-detail.js
 // import data from "../../../data/posts.js"
 const data = require('../../../data/posts.js')
+const app = getApp()
 
 Page({
 
@@ -21,6 +22,15 @@ Page({
       post,
       postId
     })
+    this.setPostCollected(postId)
+    // wx.setStorageSync('key', "怪物猎人")
+    // wx.getStorageSync('key')
+    // wx.removeStorageSync('key')
+    // wx.clearStorageSync()
+    this.setMusicMonitor()
+  },
+
+  setPostCollected: function(postId) {
     let postsCollected = wx.getStorageSync('posts_collected')
     if (postsCollected) {
       const postCollected = postsCollected[postId]
@@ -34,19 +44,29 @@ Page({
       postsCollected[postId] = false
       wx.setStorageSync('posts_collected', postsCollected)
     }
-    // wx.setStorageSync('key', "怪物猎人")
-    // wx.getStorageSync('key')
-    // wx.removeStorageSync('key')
-    // wx.clearStorageSync()
-    wx.onBackgroundAudioPlay((res) => {
+  },
+
+  setMusicMonitor: function() {
+    if (app.globalData.g_isPlayingMusic && app.globalData.g_currentMusicPostId === this.data.postId) {
       this.setData({
         isPlayingMusic: true
       })
+    }
+    wx.onBackgroundAudioPlay((res) => {
+      if (app.globalData.g_currentMusicPostId === this.data.postId) {
+        this.setData({
+          isPlayingMusic: true
+        })
+        app.globalData.g_isPlayingMusic = true
+      }
     })
     wx.onBackgroundAudioPause((res) => {
-      this.setData({
-        isPlayingMusic: false
-      })
+      if (app.globalData.g_currentMusicPostId === this.data.postId) {
+        this.setData({
+          isPlayingMusic: false
+        })
+        app.globalData.g_isPlayingMusic = false
+      }
     })
   },
 
@@ -118,6 +138,7 @@ Page({
     const isPlayingMusic = this.data.isPlayingMusic
     const { url, title, coverImg } = this.data.post.music
     if (isPlayingMusic) {
+      app.globalData.g_currentMusicPostId = null
       wx.pauseBackgroundAudio({
         success: (res) => {
           this.setData({
@@ -126,6 +147,7 @@ Page({
         },
       })
     } else {
+      app.globalData.g_currentMusicPostId = this.data.postId
       wx.playBackgroundAudio({
         dataUrl: url,
         title: title,
