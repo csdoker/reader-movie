@@ -1,4 +1,6 @@
 // pages/movies/movies.js
+
+const app = getApp()
 Page({
 
   /**
@@ -12,7 +14,25 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    const inTheatersUrl = `${app.globalData.doubanBase}/v2/movie/in_theaters`
+    const comingSoonUrl = `${app.globalData.doubanBase}/v2/movie/coming_soon`
+    const topUrl = `${app.globalData.doubanBase}/v2/movie/top250`
+    this.getMovieList(inTheatersUrl)
+    this.getMovieList(comingSoonUrl)
+    this.getMovieList(topUrl)
+  },
 
+  getMovieList: function(url) {
+    wx.request({
+      url,
+      method: 'GET',
+      // header: {
+      //   'Content-Type': 'application/xml'
+      // },
+      success: (res) => {
+        
+      }
+    })
   },
 
   /**
