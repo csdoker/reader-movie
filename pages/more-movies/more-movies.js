@@ -1,4 +1,6 @@
 // pages/more-movies/more-movies.js
+const util = require('../../utils/util.js')
+const app = getApp()
 Page({
 
   /**
@@ -15,6 +17,26 @@ Page({
     const { category } = options
     this.setData({
       navigateTitle: category
+    })
+    let url = ''
+    switch (category) {
+      case "正在热映":
+        url = `${app.globalData.doubanBase}/v2/movie/in_theaters`
+        break;
+      case "即将上映":
+        url = `${app.globalData.doubanBase}/v2/movie/coming_soon`
+        break;
+      case "豆瓣TOP250":
+        url = `${app.globalData.doubanBase}/v2/movie/top250`
+        break;
+    }
+    util.request(url).then((res) => {
+      const {
+        subjects
+      } = res.data
+      const movies = util.formatMovies(subjects)
+      console.log(movies)
+      this.setData({movies})
     })
   },
 

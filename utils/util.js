@@ -11,6 +11,43 @@ function convertToStars(stars) {
   return arr
 }
 
+function request(url) {
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url,
+      method: 'GET',
+      // header: {
+      //   'Content-Type': 'application/xml'
+      // },
+      success: (res) => {
+        resolve(res)
+      },
+      fail: (err) => {
+        reject(err)
+      }
+    })
+  })
+}
+
+function formatMovies(subjects, key, category) {
+  const movies = []
+  subjects.forEach(subject => {
+    let title = subject.title
+    title = title.length >= 6 ? `${title.substring(0, 6)}...` : title
+    const stars = convertToStars(subject.rating.stars)
+    movies.push({
+      stars,
+      title,
+      average: subject.rating.average,
+      coverageUrl: subject.images.large,
+      movieId: subject.id
+    })
+  })
+  return movies
+}
+
 module.exports = {
-  convertToStars
+  convertToStars,
+  request,
+  formatMovies
 }

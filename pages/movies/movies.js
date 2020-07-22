@@ -25,36 +25,22 @@ Page({
     this.getMovieList(topUrl, 'top250', '豆瓣TOP250')
   },
 
-  getMovieList: function(url, key, category) {
-    wx.request({
-      url,
-      method: 'GET',
-      // header: {
-      //   'Content-Type': 'application/xml'
-      // },
-      success: (res) => {
-        const { subjects } = res.data
-        const movies = []
-        subjects.forEach(subject => {
-          let title = subject.title
-          title = title.length >= 6 ? `${title.substring(0, 6)}...` : title
-          const stars = util.convertToStars(subject.rating.stars)
-          movies.push({
-            stars,
-            title,
-            average: subject.rating.average,
-            coverageUrl: subject.images.large,
-            movieId: subject.id
-          })
-        })
-        const obj = {}
-        obj[key] = { category, movies }
-        this.setData(obj)
+  getMovieList: function (url, key, category) {
+    util.request(url).then((res) => {
+      const {
+        subjects
+      } = res.data
+      const movies = util.formatMovies(subjects, key, category)
+      const obj = {}
+      obj[key] = {
+        category,
+        movies
       }
+      this.setData(obj)
     })
   },
 
-  onMoreTap: function(event) {
+  onMoreTap: function (event) {
     const category = event.currentTarget.dataset.category
     wx.navigateTo({
       url: `../more-movies/more-movies?category=${category}`
