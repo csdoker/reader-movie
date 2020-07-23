@@ -40,6 +40,9 @@ Page({
   },
 
   getMoviesList: function(url) {
+    wx.showNavigationBarLoading({
+      success: (res) => {},
+    })
     util.request(url).then((res) => {
       const {
         subjects
@@ -57,6 +60,9 @@ Page({
       this.setData({ 
         movies: totalMovies,
         totalCount: this.data.totalCount + 20
+       })
+       wx.hideNavigationBarLoading({
+         success: (res) => {},
        })
     })
   },
