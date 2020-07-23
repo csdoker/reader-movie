@@ -7,7 +7,10 @@ Page({
    * 页面的初始数据
    */
   data: {
-    navigateTitle: ''
+    navigateTitle: '',
+    requestUrl: '',
+    totalCount: 0,
+    isEmpty: true
   },
 
   /**
@@ -30,14 +33,37 @@ Page({
         url = `${app.globalData.doubanBase}/v2/movie/top250`
         break;
     }
+    this.setData({
+      requestUrl: url
+    })
+    this.getMoviesList(url)
+  },
+
+  getMoviesList: function(url) {
     util.request(url).then((res) => {
       const {
         subjects
       } = res.data
       const movies = util.formatMovies(subjects)
-      console.log(movies)
-      this.setData({movies})
+      let totalMovies = []
+      if (!this.data.isEmpty) {
+        totalMovies = this.data.movies.concat(movies)
+      } else {
+        totalMovies = movies
+        this.setData({
+          isEmpty: false
+        })
+      }
+      this.setData({ 
+        movies: totalMovies,
+        totalCount: this.data.totalCount + 20
+       })
     })
+  },
+
+  onScrollLower: function(event) {
+    const nextUrl = `${this.data.requestUrl}?start=${this.data.totalCount}&count=20`
+    this.getMoviesList(nextUrl)
   },
 
   /**
