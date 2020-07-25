@@ -10,7 +10,10 @@ Page({
   data: {
     inTheaters: {},
     comingSoon: {},
-    top250: {}
+    top250: {},
+    searchResult: {},
+    containerVisible: true,
+    searchPanelVisible: false
   },
 
   /**
@@ -45,5 +48,26 @@ Page({
     wx.navigateTo({
       url: `../more-movies/more-movies?category=${category}`
     })
+  },
+
+  onBindFocus: function(event) {
+    this.setData({
+      containerVisible: false,
+      searchPanelVisible: true
+    })
+  },
+
+  onCancelImgTap: function() {
+    this.setData({
+      containerVisible: true,
+      searchPanelVisible: false,
+      searchResult: {}
+    })
+  },
+
+  onBindChange: function(event) {
+    const text = event.detail.value
+    const searchUrl = `${app.globalData.doubanBase}/v2/movie/search?q=${text}`
+    this.getMovieList(searchUrl, 'searchResult', '')
   }
 })
