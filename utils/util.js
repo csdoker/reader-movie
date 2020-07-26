@@ -11,6 +11,28 @@ function convertToStars(stars) {
   return arr
 }
 
+function convertToCastString(casts) {
+  let castsJoin = ''
+  casts.forEach(cast => {
+    castsJoin = castsJoin + cast.name + ' / '
+  })
+  return castsJoin.substring(0, castsJoin.length - 2)
+}
+
+function convertToCastInfos(casts) {
+  const castsArr = []
+  for (const key in casts) {
+    if (casts.hasOwnProperty(key)) {
+      const cast = {
+        img: casts[key].avatars.large,
+        name: casts[key].name
+      }
+      castsArr.push(cast)
+    }
+  }
+  return castsArr
+}
+
 function request(url) {
   return new Promise((resolve, reject) => {
     wx.request({
@@ -48,6 +70,8 @@ function formatMovies(subjects, key, category) {
 
 module.exports = {
   convertToStars,
+  convertToCastString,
+  convertToCastInfos,
   request,
   formatMovies
 }

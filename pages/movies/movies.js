@@ -69,5 +69,12 @@ Page({
     const text = event.detail.value
     const searchUrl = `${app.globalData.doubanBase}/v2/movie/search?q=${text}`
     this.getMovieList(searchUrl, 'searchResult', '')
+  },
+
+  onMovieTap: function(event) {
+    const { movieId } = event.currentTarget.dataset
+    wx.navigateTo({
+      url: `../movie-detail/movie-detail?id=${movieId}`,
+    })
   }
 })

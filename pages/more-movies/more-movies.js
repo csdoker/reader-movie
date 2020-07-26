@@ -86,6 +86,7 @@ Page({
     const refreshUrl = `${this.data.requestUrl}?star=0&count=20`
     this.setData({
       movies: [],
+      totalCount: 0,
       isEmpty: true
     })
     this.getMoviesList(refreshUrl)
