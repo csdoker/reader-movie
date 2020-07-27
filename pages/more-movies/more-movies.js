@@ -98,5 +98,12 @@ Page({
   onReachBottom: function () {
     const nextUrl = `${this.data.requestUrl}?start=${this.data.totalCount}&count=20`
     this.getMoviesList(nextUrl)
+  },
+
+  onMovieTap: function(event) {
+    const { movieId } = event.currentTarget.dataset
+    wx.navigateTo({
+      url: `../movie-detail/movie-detail?id=${movieId}`,
+    })
   }
 })

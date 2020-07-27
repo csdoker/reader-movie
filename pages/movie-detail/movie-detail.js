@@ -50,6 +50,14 @@ Page({
     })
   },
 
+  viewMoviePostImg: function(event) {
+    const { src } = event.currentTarget.dataset
+    wx.previewImage({
+      urls: [src],
+      current: src
+    })
+  },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
